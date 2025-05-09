@@ -45,6 +45,10 @@ public class ConverterMenu {
 
             System.out.println("""
                     $$$$$$$$$$ CONVERSOR DE MOEDAS $$$$$$$$$$
+                    
+                    Bem-vindo ao Conversor de Moedas!
+                    API Utilizada: ExchangeRate-API
+                    
                     Escolha pelo número uma das opções abaixo:
                                     
                     Converter de:
@@ -54,11 +58,9 @@ public class ConverterMenu {
                     4. Peso Argentino (ARS)
                     5. Yene Japones (JPY)
                     0. Sair
-                                    
                     *******************************************
-                                    
-                    Digite a opção escolhida:
-                    """);
+                       
+                    Digite a opção escolhida: """);
             this.opcaoConverterDe = sc.nextInt();
             sc.nextLine();
 
@@ -73,19 +75,17 @@ public class ConverterMenu {
             }
 
             System.out.println("""
-                                    
-                     Para:
+                    
+                    Para:
                     1. Real Brasileiro (BRL)
                     2. Dólar Americano (USD)
                     3. Euro (EUR)
                     4. Peso Argentino (ARS)
                     5. Yene Japones (JPY)
                     0. Sair
-                                    
                     *******************************************
-                                    
-                    Digite a opção escolhida:
-                    """);
+                    
+                    Digite a opção escolhida: """);
             this.opcaoPara = sc.nextInt();
             sc.nextLine();
 

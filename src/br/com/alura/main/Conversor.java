@@ -17,10 +17,10 @@ public class Conversor {
         this.opcaoMoeda = new ConverterMenu();
     }
 
-    public String realizarConversao() {
+    public String realizarConversao() throws IOException, InterruptedException {
         opcaoMoeda.converterMenu();
 
-        if(!opcaoMoeda.isEntradasValidas()) {
+        if (!opcaoMoeda.isEntradasValidas()) {
             if (opcaoMoeda.getOpcaoConverterDe() == 0 && opcaoMoeda.isEntradasValidas()) {
                 return "Operação cancelada pelo usoário";
             }
@@ -34,31 +34,56 @@ public class Conversor {
         if (siglaDe == null || siglaPara == null || valor <= 0) {
             return "Erro: Dados para conversão inválidos (moedas ou valor).";
         }
-
-        URI endereco = URI.create("https://v6.exchangerate-api.com/v6/" +
-                apiKey + "/pair/" + siglaDe + "/" + siglaPara + "/" + valor);
-
-        HttpRequest request = HttpRequest.newBuilder().uri(endereco).build();
-
+        URI endereco;
         try {
-            HttpResponse<String> response = HttpClient.newHttpClient()
-                    .send(request, HttpResponse.BodyHandlers.ofString());
-            Moeda moedaconvertida = gson.fromJson(response.body(), Moeda.class);
-            return String.format("Valor convertido: %.2f %s (Taxa: 1 %s = %.4f %s)",
-                    valorFinalConvertido,
-                    moedaConvertida.getTarget_code(),
-                    moedaConvertida.getBase_code(),
-                    moedaConvertida.getConversion_rate(),
-                    moedaConvertida.getTarget_code());
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            String urlString = "https://v6.exchangerate-api.com/v6/" +
+                    apiKey + "/pair/" + siglaDe + "/" + siglaPara + "/" + valor;
+            endereco = URI.create(urlString);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Erro ao criar URI: " + e.getMessage());
+            return "Erro interno ao formar o pedido de conversão.";
         }
 
+            HttpRequest request = HttpRequest.newBuilder().uri(endereco).build();
+
+            try {
+                HttpResponse<String> response = HttpClient.newHttpClient()
+                        .send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    String responseBody = response.body();
+
+                    Moeda moedaConvertida = gson.fromJson(responseBody, Moeda.class);
+
+                    if ("success".equalsIgnoreCase(moedaConvertida.getResult())) {
+
+                        return String.format("""
+                                        
+                                        ****************************************************************
+                                        %.2f %s equivalem a %.2f %s (Taxa de conversão: %.4f)
+                                        ****************************************************************
+                                        """,
+                                valor,
+                                moedaConvertida.getBase_code(),
+                                moedaConvertida.getConversion_result(),
+                                moedaConvertida.getTarget_code(),
+                                moedaConvertida.getConversion_rate());
+                    } else {
+                        return "Erro da API ao converter moedas (JSON 'result' não é 'success'). Detalhes: " + responseBody;
+                    }
+                } else {
+                    return "Erro na API: Status " + response.statusCode() + " - Corpo: " + response.body();
+                }
+
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+                return "Erro de comunicação com a API: " + e.getMessage();
+            }
+        }
+
+        public void fecharRecursos() {
+            if (opcaoMoeda != null) {
+                opcaoMoeda.fecharScanner();
+            }
+        }
     }
-
-
-
-}
