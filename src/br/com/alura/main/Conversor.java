@@ -40,7 +40,7 @@ public class Conversor {
                     apiKey + "/pair/" + siglaDe + "/" + siglaPara + "/" + valor;
             endereco = URI.create(urlString);
         } catch (IllegalArgumentException e) {
-            System.err.println("Erro ao criar URI: " + e.getMessage());
+            System.out.println("Erro ao criar URI: " + e.getMessage());
             return "Erro interno ao formar o pedido de conversão.";
         }
 

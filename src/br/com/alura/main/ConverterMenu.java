@@ -44,8 +44,11 @@ public class ConverterMenu {
         try {
 
             System.out.println("""
+                    $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                     $$$$$$$$$$ CONVERSOR DE MOEDAS $$$$$$$$$$
+                    $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                     
+                    *******************************************
                     Bem-vindo ao Conversor de Moedas!
                     API Utilizada: ExchangeRate-API
                     
@@ -97,6 +100,7 @@ public class ConverterMenu {
                 System.out.println("Não é possível converter uma moeda para ela mesma. Tente novamente.");
             }
 
+            System.out.println("*******************************************");
             System.out.println("\nDigite o valor a ser convertido:");
             this.valorParaConverter = sc.nextDouble();
             sc.nextLine();
